@@ -1,0 +1,38 @@
+{
+  "nf4_single_quant": {
+    "shape": [
+      1024,
+      1024
+    ],
+    "num_params": 1048576,
+    "blocksize": 64,
+    "double_quant": false,
+    "bits_per_param": 4.5,
+    "compression_vs_fp16": 3.56,
+    "compression_vs_fp32": 7.11,
+    "mse": 3.38924382958794e-06,
+    "rmse": 0.0018409899048033751,
+    "cosine_similarity": 0.995775
+  },
+  "nf4_double_quant": {
+    "shape": [
+      1024,
+      1024
+    ],
+    "num_params": 1048576,
+    "blocksize": 64,
+    "double_quant": true,
+    "bits_per_param": 4.127,
+    "compression_vs_fp16": 3.88,
+    "compression_vs_fp32": 7.75,
+    "mse": 3.389136509213131e-06,
+    "rmse": 0.0018409607571083994,
+    "cosine_similarity": 0.995772
+  },
+  "double_quant_savings_bpp": 0.373,
+  "hardware_environment": {
+    "cuda_available": false,
+    "bitsandbytes_available": false,
+    "note": "Hardware QLoRA skipped (ModuleNotFoundError: No module named 'bitsandbytes'). Running pure-PyTorch NF4 simulation on CPU (recommended on Windows)."
+  }
+}

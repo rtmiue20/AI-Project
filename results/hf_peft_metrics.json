@@ -1,0 +1,80 @@
+{
+  "environment": {
+    "device": "cpu",
+    "model_name": "distilbert-base-uncased",
+    "dataset_source": "offline:sst2_sample.csv",
+    "train_samples": 80,
+    "eval_samples": 40,
+    "epochs": 2,
+    "batch_size": 8,
+    "grad_accum": 4
+  },
+  "runs": [
+    {
+      "method": "Full Fine-tuning",
+      "lora_rank": null,
+      "learning_rate": 2e-05,
+      "trainable_params": 66955010,
+      "total_params": 66955010,
+      "trainable_pct": 100.0,
+      "elapsed_sec": 8.02,
+      "peak_memory_mb": 0.0,
+      "memory_metric_label": "Peak Memory (MB)",
+      "final_eval_loss": 0.683,
+      "final_accuracy": 0.6,
+      "final_f1": 0.3333,
+      "epoch_train_losses": [
+        0.6981,
+        0.681
+      ],
+      "epoch_eval_accuracies": [
+        0.55,
+        0.6
+      ]
+    },
+    {
+      "method": "LoRA (r=4, alpha=8)",
+      "lora_rank": 4,
+      "learning_rate": 0.0003,
+      "trainable_params": 665858,
+      "total_params": 67620868,
+      "trainable_pct": 0.9847,
+      "elapsed_sec": 4.53,
+      "peak_memory_mb": 0.0,
+      "memory_metric_label": "Peak Memory (MB)",
+      "final_eval_loss": 0.6375,
+      "final_accuracy": 0.975,
+      "final_f1": 0.9744,
+      "epoch_train_losses": [
+        0.6875,
+        0.6467
+      ],
+      "epoch_eval_accuracies": [
+        0.975,
+        0.975
+      ]
+    },
+    {
+      "method": "LoRA (r=16, alpha=32)",
+      "lora_rank": 16,
+      "learning_rate": 0.0003,
+      "trainable_params": 887042,
+      "total_params": 67842052,
+      "trainable_pct": 1.3075,
+      "elapsed_sec": 5.04,
+      "peak_memory_mb": 0.0,
+      "memory_metric_label": "Peak Memory (MB)",
+      "final_eval_loss": 0.6444,
+      "final_accuracy": 0.9,
+      "final_f1": 0.8889,
+      "epoch_train_losses": [
+        0.6987,
+        0.6457
+      ],
+      "epoch_eval_accuracies": [
+        0.825,
+        0.9
+      ]
+    }
+  ]
+}

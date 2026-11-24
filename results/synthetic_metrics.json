@@ -1,0 +1,55 @@
+{
+  "config": {
+    "dim": 256,
+    "true_rank": 8,
+    "steps": 150,
+    "lr": 0.01,
+    "device": "cpu"
+  },
+  "runs": [
+    {
+      "name": "Full Fine-tuning",
+      "trainable_params": 65792,
+      "total_params": 65792,
+      "trainable_pct": 100.0,
+      "elapsed_sec": 0.3002,
+      "initial_val_mse": 7.862331,
+      "final_train_mse": 0.002015,
+      "final_val_mse": 0.011912,
+      "merge_verified": null
+    },
+    {
+      "name": "LoRA (r=4)",
+      "trainable_params": 2048,
+      "total_params": 67840,
+      "trainable_pct": 3.02,
+      "elapsed_sec": 0.2813,
+      "initial_val_mse": 8.409101,
+      "final_train_mse": 3.220882,
+      "final_val_mse": 3.581031,
+      "merge_verified": true
+    },
+    {
+      "name": "LoRA (r=8)",
+      "trainable_params": 4096,
+      "total_params": 69888,
+      "trainable_pct": 5.86,
+      "elapsed_sec": 0.2833,
+      "initial_val_mse": 8.408218,
+      "final_train_mse": 0.000253,
+      "final_val_mse": 0.000339,
+      "merge_verified": true
+    },
+    {
+      "name": "LoRA (r=16)",
+      "trainable_params": 8192,
+      "total_params": 73984,
+      "trainable_pct": 11.07,
+      "elapsed_sec": 0.2855,
+      "initial_val_mse": 8.3608,
+      "final_train_mse": 0.000232,
+      "final_val_mse": 0.000249,
+      "merge_verified": true
+    }
+  ]
+}

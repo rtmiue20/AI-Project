@@ -91,7 +91,7 @@ def _load_sst2_splits(
 
     raw = load_dataset("csv", data_files=str(DATA_PATH))["train"]
     indices = list(range(len(raw)))
-    labels = raw["label"]
+    labels = [int(x) for x in raw["label"]]
     train_idx, eval_idx = train_test_split(
         indices, test_size=1 / 3, stratify=labels, random_state=seed
     )

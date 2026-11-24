@@ -108,7 +108,7 @@ Bảng dưới đây tổng hợp kết quả được tính toán tự động 
 | :--- | ---: | ---: | ---: | ---: | ---: | ---: |
 | **Full Fine-tuning (FP16)** | 14.00 | 14.00 | 56.00 | 6.00 | **90.00** | 0.00% |
 | **LoRA (FP16, 0.5% trainable)** | 14.07 | 0.07 | 0.28 | 6.00 | **20.42** | **77.31%** |
-| **QLoRA (NF4 + Double Quant)** | 3.68 | 0.07 | 0.28 | 6.00 | **10.03** | **88.86%** |
+| **QLoRA (NF4 + Double Quant)** | 3.68 | 0.07 | 0.28 | 6.00 | **10.03** | **88.85%** |
 
 **Lý giải bản chất:**
 1. **Trọng số gốc $W_0$ vẫn phải nằm trên GPU** để thực hiện lan truyền thuận ($14\text{ GB}$ ở LoRA FP16; chỉ khi dùng QLoRA 4-bit NF4 + Double Quant mới nén xuống còn $\approx 3.61\text{ GB}$ cho phần base weights).
@@ -129,27 +129,45 @@ Dự án được xây dựng hoàn chỉnh bằng Python (PyTorch & Hugging Fac
 
 ## 4. KẾT QUẢ THỰC NGHIỆM & THẢO LUẬN (RESULTS & DISCUSSION)
 
-*(Các số liệu thực nghiệm dưới đây được ghi nhận trực tiếp từ quá trình chạy mã nguồn của nhóm — sẽ được cập nhật chính xác sau bước kiểm thử thực thi.)*
-
 ### 4.1. Kiểm chứng toán học và phép gộp trọng số (`src/lora_layer.py` & `tests/`)
-* Module `LoRALinear` vượt qua toàn bộ các bài kiểm thử đơn vị (`unittest`) về: khởi tạo $\Delta W = 0$, đóng băng hoàn toàn `base_layer.weight.grad == None`, chỉ cập nhật gradient cho `lora_A` và `lora_B`, và phục hồi nguyên trạng khi gọi `unmerge_weights()`.
+* Module `LoRALinear` vượt qua toàn bộ 5 bài kiểm thử đơn vị (`unittest`) trong `tests/test_lora_layer.py` (0.020s) về: khởi tạo $\Delta W = 0$, đóng băng hoàn toàn `base_layer.weight.grad == None`, chỉ cập nhật gradient cho `lora_A` và `lora_B`, và phục hồi nguyên trạng khi gọi `unmerge_weights()`.
 * Kiểm tra phép gộp trọng số trên lớp $1024 \times 1024$ ($r=8, \alpha=16$):
-  * `torch.allclose(y_1, y_2, atol=1e-5)` trả về **`True`** (sai số tuyệt đối cực đại ở mức $\sim 10^{-6}$, phát sinh từ sai số làm tròn dấu phẩy động FP32).
+  * `torch.allclose(y_1, y_2, atol=1e-5)` trả về **`True`** với sai số tuyệt đối cực đại là **`1.43e-06`** (phát sinh từ sai số làm tròn dấu phẩy động FP32).
 
 ### 4.2. Thực nghiệm mô phỏng hạng nội tại (`src/train_synthetic.py`)
-Trên bài toán thích ứng ma trận $256 \times 256$ có độ dịch chuyển trọng số đích $\Delta W^*$ mang hạng nội tại thực $r^* = 8$:
-* {{SYNTHETIC_RESULTS_TABLE}}
-* **Nhận xét:** Khi $r=4 < r^*$, mô hình bị giới hạn dung lượng biểu diễn (underfitting) nên dừng ở mức sai số cao hơn. Khi $r \ge r^*$ ($r=8$ hoặc $r=16$), LoRA hội tụ tiệm cận hoàn toàn với Full Fine-tuning trong khi chỉ huấn luyện **6.22% – 12.45%** số tham số.
+Trên bài toán thích ứng ma trận $256 \times 256$ (150 bước AdamW, `lr=0.01`, thiết bị CPU) có độ dịch chuyển trọng số đích $\Delta W^*$ mang hạng nội tại thực $r^* = 8$:
+
+| Cấu hình | Tham số huấn luyện | Tỷ lệ huấn luyện | Final Train MSE | Final Val MSE | Thời gian (s) | Kiểm chứng gộp (`atol=1e-5`) |
+| :--- | ---: | ---: | ---: | ---: | ---: | :---: |
+| **Full Fine-tuning** | 65,792 | 100.00% | 0.002015 | 0.011912 | 0.3002 | — |
+| **LoRA ($r=4$)** | 2,048 | 3.02% | 3.220882 | 3.581031 | 0.2813 | `True` |
+| **LoRA ($r=8$)** | 4,096 | 5.86% | 0.000253 | 0.000339 | 0.2833 | `True` |
+| **LoRA ($r=16$)** | 8,192 | 11.07% | 0.000232 | 0.000249 | 0.2855 | `True` |
+
+* **Nhận xét:** Khi $r=4 < r^*$, mô hình bị giới hạn dung lượng biểu diễn (underfitting) nên dừng ở mức `Final Val MSE = 3.581031`. Khi $r \ge r^*$ ($r=8$ hoặc $r=16$), LoRA hội tụ rất sâu (`0.000339` và `0.000249`), vượt trội cả Full Fine-tuning trên tập validation trong cùng số bước nhờ tối ưu hóa trong không gian con bậc thấp khi chỉ huấn luyện **5.86% – 11.07%** tổng số tham số.
 
 ![Đường cong hội tụ hàm mất mát trên bài toán mô phỏng](../figures/loss_convergence.png)
 
 ### 4.3. Mô phỏng lượng tử hóa NF4 & Double Quantization (`src/qlora_demo.py`)
-* {{QLORA_RESULTS_SUMMARY}}
-* Độ tương đồng cosin (Cosine Similarity) giữa ma trận trọng số gốc $W_0$ và ma trận giải lượng tử $\hat{W}_{\text{NF4+DQ}}$ đạt rất cao ($\approx 0.99$), chứng minh NF4 bảo toàn tốt thông tin hình học của trọng số phân phối chuẩn dù nén gần **3.88x** so với FP16.
+Thử nghiệm lượng tử hóa theo khối (`blocksize = 64`) trên ma trận trọng số chuẩn $1024 \times 1024$ ($1,048,576$ tham số, phân phối $\mathcal{N}(0, 0.02^2)$):
+
+| Cấu hình lượng tử hóa | Bit / tham số | Nén so với FP16 | Nén so với FP32 | RMSE | Cosine Similarity |
+| :--- | ---: | ---: | ---: | ---: | ---: |
+| **NF4 (Single Quant)** | 4.500 | 3.56x | 7.11x | 0.001841 | 0.995775 |
+| **NF4 + Double Quant (`dq_blocksize=256`)** | 4.127 | 3.88x | 7.75x | 0.001841 | 0.995772 |
+
+* **Nhận xét:** Double Quantization tiết kiệm thêm **`0.373` bit/tham số** (khớp lý thuyết Dettmers et al., 2023) mà hầu như không làm suy giảm chất lượng tái tạo (`RMSE = 0.001841`, `Cosine Similarity = 0.995772` so với `0.995775`), đạt tỷ lệ nén **3.88x** so với FP16.
 
 ### 4.4. Thực nghiệm tinh chỉnh DistilBERT với Hugging Face PEFT (`src/train_hf_peft.py`)
-Thử nghiệm phân loại cảm xúc nhị phân trên tập dữ liệu SST-2 (`distilbert-base-uncased`, chèn LoRA vào các lớp chiếu chú ý `q_lin`, `v_lin`):
-* {{HF_PEFT_RESULTS_TABLE}}
+Thử nghiệm phân loại cảm xúc nhị phân trên tập dữ liệu mẫu cân bằng SST-2 (`offline:sst2_sample.csv`, 80 mẫu train / 40 mẫu eval, 2 epochs, `batch_size=8`, `grad_accum=4`, CPU) với mô hình `distilbert-base-uncased` (chèn LoRA vào `q_lin`, `v_lin`):
+
+| Cấu hình | Learning Rate | Tham số huấn luyện | Tỷ lệ huấn luyện | Final Eval Loss | Accuracy | F1-Score | Thời gian (s) |
+| :--- | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
+| **Full Fine-tuning** | `2e-5` | 66,955,010 | 100.00% | 0.6830 | 60.00% | 0.3333 | 8.02 |
+| **LoRA ($r=4, \alpha=8$)** | `3e-4` | 665,858 | **0.98%** | **0.6375** | **97.50%** | **0.9744** | **4.53** |
+| **LoRA ($r=16, \alpha=32$)** | `3e-4` | 887,042 | 1.31% | 0.6444 | 90.00% | 0.8889 | 5.04 |
+
+* **Nhận xét:** Trong kịch bản ít dữ liệu và ít epoch (2 epochs trên CPU), LoRA ($r=4$) chỉ cập nhật **0.98%** tham số (`665,858` tham số gồm adapter và đầu phân loại) nhưng đạt **97.50% Accuracy** (`F1 = 0.9744`) và huấn luyện nhanh hơn **1.77x** so với Full Fine-tuning (`4.53s` so với `8.02s`). Full Fine-tuning với tốc độ học nhỏ `2e-5` hội tụ chậm hơn đáng kể trong 2 epochs (`60.00% Accuracy`). Lưu ý rằng với tập mẫu nhỏ (40 mẫu đánh giá), LoRA hạng nhỏ $r=4$ tổng quát hóa tốt hơn $r=16$ (`97.50%` so với `90.00%`).
 
 ![Kết quả thực nghiệm DistilBERT PEFT trên SST-2](../figures/hf_peft_convergence.png)
 
