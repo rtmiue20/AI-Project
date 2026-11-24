@@ -134,11 +134,11 @@ LoRA_QLoRA_UEH/
 
 ## 7. PHÂN CHIA CÔNG VIỆC CHO 3 THÀNH VIÊN (TEAM WORKLOAD MATRIX)
 
-| Thành viên | Vai trò | Nhiệm vụ kỹ thuật (Code & Lý thuyết) | Nhiệm vụ Báo cáo & Slide | Phản biện Seminar |
-| :--- | :--- | :--- | :--- | :--- |
-| **Thành viên 1** *(Bạn - Nhóm trưởng)* | **Lead Kỹ thuật & Tổng hợp dự án** | - Đọc sâu bài báo gốc *Hu et al. (2022)*.<br>- Viết script `calculate_parameters.py` tính toán ma trận $1024 \times 1024$.<br>- Phân tích sự đánh đổi VRAM/GPU và Optimizer states. | - Chủ trì biên tập Báo cáo (6–10 trang).<br>- Viết phần: Tóm tắt, Phương pháp & Ví dụ tính toán số.<br>- Rà soát chuẩn rubric UEH. | Trình bày phần Cơ sở Toán học & Trả lời các câu hỏi về công thức ma trận, rank $r$. |
-| **Thành viên 2** | **Thực nghiệm & Trực quan hóa** | - Cài đặt module `lora_layer.py` (PyTorch thuần).<br>- Chạy script thực nghiệm đối chứng `train_hf_peft.py`.<br>- Vẽ sơ đồ kiến trúc $W + BA$ và xuất các biểu đồ kết quả. | - Viết phần: Kết quả và Thảo luận.<br>- Đóng gói mã nguồn, làm sạch chú thích code và tạo file README chi tiết. | Trình bày phần Thực nghiệm & Trả lời câu hỏi về gộp trọng số, huấn luyện, đánh đổi bộ nhớ. |
-| **Thành viên 3** | **Nghiên cứu Mở rộng & Thiết kế Slide** | - Đọc bài báo *Dettmers et al. (2023)* về QLoRA.<br>- Phân tích so sánh 5 khái niệm: Pre-training, Full Fine-tuning, Linear probing, Adapters, PEFT.<br>- Tổng hợp các hạn chế khi LoRA không tối ưu. | - Thiết kế bộ Slide thuyết trình (8–12 slide).<br>- Viết phần: Giới thiệu, Cơ sở lý thuyết, Phân tích phản biện & Kết luận. | Trình bày phần Động lực, QLoRA, Phản biện & Trả lời câu hỏi về điều kiện áp dụng LoRA/QLoRA. |
+| Thành viên                              | Vai trò | Nhiệm vụ kỹ thuật (Code & Lý thuyết) | Nhiệm vụ Báo cáo & Slide | Phản biện Seminar |
+|:----------------------------------------| :--- | :--- | :--- | :--- |
+| **Nguyễn Văn Minh Triều - Nhóm trưởng** | **Lead Kỹ thuật & Tổng hợp dự án** | - Đọc sâu bài báo gốc *Hu et al. (2022)*.<br>- Viết script `calculate_parameters.py` tính toán ma trận $1024 \times 1024$.<br>- Phân tích sự đánh đổi VRAM/GPU và Optimizer states. | - Chủ trì biên tập Báo cáo (6–10 trang).<br>- Viết phần: Tóm tắt, Phương pháp & Ví dụ tính toán số.<br>- Rà soát chuẩn rubric UEH. | Trình bày phần Cơ sở Toán học & Trả lời các câu hỏi về công thức ma trận, rank $r$. |
+| **Ngô Trọng Phúc**                      | **Thực nghiệm & Trực quan hóa** | - Cài đặt module `lora_layer.py` (PyTorch thuần).<br>- Chạy script thực nghiệm đối chứng `train_hf_peft.py`.<br>- Vẽ sơ đồ kiến trúc $W + BA$ và xuất các biểu đồ kết quả. | - Viết phần: Kết quả và Thảo luận.<br>- Đóng gói mã nguồn, làm sạch chú thích code và tạo file README chi tiết. | Trình bày phần Thực nghiệm & Trả lời câu hỏi về gộp trọng số, huấn luyện, đánh đổi bộ nhớ. |
+| **Nguyễn Phúc Vương**                   | **Nghiên cứu Mở rộng & Thiết kế Slide** | - Đọc bài báo *Dettmers et al. (2023)* về QLoRA.<br>- Phân tích so sánh 5 khái niệm: Pre-training, Full Fine-tuning, Linear probing, Adapters, PEFT.<br>- Tổng hợp các hạn chế khi LoRA không tối ưu. | - Thiết kế bộ Slide thuyết trình (8–12 slide).<br>- Viết phần: Giới thiệu, Cơ sở lý thuyết, Phân tích phản biện & Kết luận. | Trình bày phần Động lực, QLoRA, Phản biện & Trả lời câu hỏi về điều kiện áp dụng LoRA/QLoRA. |
 
 ---
 

@@ -1,0 +1,28 @@
+# Virtual environments
+.venv/
+venv/
+env/
+
+# Python artifacts
+__pycache__/
+*.py[cod]
+*$py.class
+*.egg-info/
+.pytest_cache/
+
+# Training checkpoints & Hugging Face caches
+checkpoints/
+hf_cache/
+runs/
+logs/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Keep project deliverables & outputs tracked
+!figures/
+!figures/*.png
+!reports/
+!slides/
+!data/

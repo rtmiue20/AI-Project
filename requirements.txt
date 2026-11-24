@@ -1,0 +1,23 @@
+# =============================================================================
+# Đề tài S08: LoRA & QLoRA - UEH
+# Python 3.10+ / PyCharm Environment Dependencies
+#
+# Lưu ý cài đặt PyTorch có CUDA (nếu máy có GPU NVIDIA hỗ trợ CUDA 11.8):
+#   pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu118
+#
+# Lưu ý cho QLoRA (bitsandbytes):
+#   Thư viện bitsandbytes hoạt động ổn định nhất trên Linux / Google Colab.
+#   Trên Windows, chạy các script mô phỏng thuần PyTorch (src/qlora_demo.py)
+#   hoặc dùng Google Colab nếu muốn chạy 4-bit NF4 thực tế trên GPU lớn.
+# =============================================================================
+
+torch>=2.1.0
+transformers>=4.38.0
+datasets>=2.16.0
+peft>=0.9.0
+accelerate>=0.27.0
+evaluate>=0.4.1
+scikit-learn>=1.3.0
+matplotlib>=3.8.0
+seaborn>=0.13.0
+tabulate>=0.9.0

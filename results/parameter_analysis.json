@@ -1,0 +1,65 @@
+{
+  "linear_1024x1024": [
+    {
+      "method": "Full Fine-tuning",
+      "rank": null,
+      "formula": "1024 x 1024",
+      "trainable_params": 1048576,
+      "trainable_pct": 100.0,
+      "reduction_pct": 0.0
+    },
+    {
+      "method": "LoRA (r=4)",
+      "rank": 4,
+      "formula": "4 x (1024 + 1024)",
+      "trainable_params": 8192,
+      "trainable_pct": 0.7812,
+      "reduction_pct": 99.22
+    },
+    {
+      "method": "LoRA (r=8)",
+      "rank": 8,
+      "formula": "8 x (1024 + 1024)",
+      "trainable_params": 16384,
+      "trainable_pct": 1.5625,
+      "reduction_pct": 98.44
+    },
+    {
+      "method": "LoRA (r=16)",
+      "rank": 16,
+      "formula": "16 x (1024 + 1024)",
+      "trainable_params": 32768,
+      "trainable_pct": 3.125,
+      "reduction_pct": 96.88
+    }
+  ],
+  "vram_7b_breakdown": [
+    {
+      "config": "Full Fine-tuning (FP16)",
+      "weights_gb": 14.0,
+      "gradients_gb": 14.0,
+      "optimizer_states_gb": 56.0,
+      "activations_gb": 6.0,
+      "total_vram_gb": 90.0,
+      "vram_saved_vs_full_pct": 0.0
+    },
+    {
+      "config": "LoRA (FP16, 0.5% trainable)",
+      "weights_gb": 14.07,
+      "gradients_gb": 0.07,
+      "optimizer_states_gb": 0.28,
+      "activations_gb": 6.0,
+      "total_vram_gb": 20.42,
+      "vram_saved_vs_full_pct": 77.31
+    },
+    {
+      "config": "QLoRA (NF4 + Double Quant)",
+      "weights_gb": 3.68,
+      "gradients_gb": 0.07,
+      "optimizer_states_gb": 0.28,
+      "activations_gb": 6.0,
+      "total_vram_gb": 10.03,
+      "vram_saved_vs_full_pct": 88.85
+    }
+  ]
+}
